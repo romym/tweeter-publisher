@@ -10,15 +10,6 @@ app.get('/tweets', function(req, res){
 
 
 
-// var arr = [];
-// for (var i = 0 ; i < 100000; i++) {
-//     var randomName = faker.name.findName()
-//     arr.push(randomName);
-// }
-// var uniqueItems = Array.from(new Set(arr))
-// console.log('uniquearray', uniqueItems.length);
-
-
 app.listen(3000, function(){
     console.log('listening on port 3000');
 })
