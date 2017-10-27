@@ -32,7 +32,7 @@ CREATE TABLE tweets (
 	retweets integer,
 	replies integer,
 	impressions integer,
-	type tweet_type
+	type varchar (50)
 );
 
 DROP TABLE IF EXISTS follows;

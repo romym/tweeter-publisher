@@ -29,14 +29,17 @@ pool.connect(function(err, client, done) {
     })
 }
 
-var insertTweet = function(user_id, message, ceated_at, views, likes, retweets, replies, impressions, type) {
-    const text = 'INSERT INTO tweets (user_id, message, ceated_at, views, likes, retweets, replies, impressions, type) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)'
-    const values = [user_id, message, ceated_at, views, likes, retweets, replies, impressions, type];
+var insertTweet = function(user_id, message, created_at, views, likes, retweets, replies, impressions, type) {
+    const text = 'INSERT INTO tweets (user_id, message, created_at, views, likes, retweets, replies, impressions, type) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)'
+    const values = [user_id, message, created_at, views, likes, retweets, replies, impressions, type];
     
     client.query(text, values, (err, res) => {
         if (err) {
         console.log('error inserting into db', err);
-        } 
+        } else {
+            console.log('inserted tweet');
+            
+        }
     })
 }
 
