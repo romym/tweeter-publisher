@@ -1,10 +1,10 @@
-const { Pool, Client } = require('pg')
+const { Pool, Client } = require('pg');
 var pool = new Pool({
     database: 'tweeter',
     password: ''
   })
   
-  const client = new Client({
+const client = new Client({
     database: 'tweeter',
     password: ''
   })
@@ -18,13 +18,13 @@ pool.connect(function(err, client, done) {
     done()
   })
 
-  var insertUser = function(handle, name, timezone, publisher) {
+var insertUser = function(handle, name, timezone, publisher) {
     const text = 'INSERT INTO users (handle, name, timezone, publisher) VALUES($1, $2, $3, $4)'
     const values = [handle, name, timezone, publisher];
     
     client.query(text, values, (err, res) => {
         if (err) {
-        console.log('error inserting into db', err);
+            console.log('error inserting into db', err);
         } 
     })
 }
@@ -35,7 +35,7 @@ var insertTweet = function(user_id, message, created_at, views, likes, retweets,
     
     client.query(text, values, (err, res) => {
         if (err) {
-        console.log('error inserting into db', err);
+            console.log('error inserting into db', err);
         } else {
             console.log('inserted tweet');
             
@@ -49,7 +49,7 @@ var insertFollow = function(follow_id, follower_id) {
     
     client.query(text, values, (err, res) => {
         if (err) {
-        console.log('error inserting into db', err);
+            console.log('error inserting into db', err);
         } 
     })
 }
