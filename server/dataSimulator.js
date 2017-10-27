@@ -1,5 +1,6 @@
 var faker = require('faker');
 var fs = require('fs');
+
 var csv = require('fast-csv');
 var db = require('../database/database.js');
 var Sentencer = require('sentencer');
@@ -25,14 +26,14 @@ var userGeneration = function() {
             number = Math.random();
             if (number < publisherProb) {
                 pubBool = true;
-            }  else {
+            } else {
                 pubBool = false;
             }
           // for the csv 
           // usersArr.push([count, handle, name, 'PST', pubBool]);
-           db.insertUser(handle, name, 'PST', pubBool);
+            db.insertUser(handle, name, 'PST', pubBool);
             count++;
-            if (count%100 === 0) {
+            if (count % 100 === 0) {
                 console.log('100 added');
             }
         }
@@ -44,14 +45,6 @@ var userGeneration = function() {
 };
 
 //userGeneration(); 
-
-// fs.createReadStream('test.csv').pipe(csv)
-// .on('data', function(data){
-//     console.log('writing data');
-// })
-// .on('end', function(data){
-//     console.log('read finished');
-// })
 
 
 // create 10 million tweets 
@@ -68,7 +61,7 @@ var messageGenerationPublisher = function(){
         return array[randomIndex];
       };
     var randomMessage = function(){
-    return [randomElement(opening), randomElement(verbs), randomElement(objects), randomElement(nouns), randomElement(tags)].join(' ');
+        return [randomElement(opening), randomElement(verbs), randomElement(objects), randomElement(nouns), randomElement(tags)].join(' ');
     };
     
     var randomDate = function(start, end) {
@@ -116,7 +109,7 @@ var messageGenerationTotal = function(){
         return array[randomIndex];
       };
     var randomMessage = function(){
-    return [randomElement(opening), randomElement(verbs), randomElement(objects), randomElement(nouns), randomElement(tags)].join(' ');
+        return [randomElement(opening), randomElement(verbs), randomElement(objects), randomElement(nouns), randomElement(tags)].join(' ');
     };
     
     var randomDate = function(start, end) {
