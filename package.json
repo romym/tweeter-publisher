@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.138.0",
+    "aws-sdk": "^2.141.0",
     "body-parser": "^1.18.2",
     "elasticsearch": "^13.3.1",
     "elasticsearch-csv": "0.0.3",
