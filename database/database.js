@@ -43,6 +43,23 @@ var insertTweet = function(user_id, message, created_at, views, likes, retweets,
     })
 }
 
+var getTweets = function(user_id, callback) {
+    //select * from tweets where user_id = 2 order by created_at desc limit 10;
+    const text = 'SELECT * from tweets WHERE user_id = $1 order by created_at desc limit 25'
+    const values = [user_id];
+    
+    client.query(text, values, (err, res) => {
+        if (err) {
+            console.log('error getting data', err);
+            callback(err, null)
+        } else {
+            console.log('tweets', res);
+            callback(null, res);
+        }
+    })
+}
+
+
 var insertFollow = function(follow_id, follower_id) {
     const text = 'INSERT INTO follows (follow_id, follower_id) VALUES($1, $2)'
     const values = [follow_id, follower_id];
@@ -55,6 +72,8 @@ var insertFollow = function(follow_id, follower_id) {
 }
 
 
+
 module.exports.insertUser = insertUser;
 module.exports.insertTweet = insertTweet;
 module.exports.insertFollow = insertFollow;
+module.exports.getTweets = getTweets;
