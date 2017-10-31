@@ -12,6 +12,13 @@ const app = Consumer.create({
  handleMessage: (message, done) => {
    // do some work with `message`
    console.log('message', message);
+   // check the attricute and update db accordingly
+   //update like
+   //update impressions
+   //update views
+   //update retweets
+   //update reply
+   
    done();
  }
 });
