@@ -28,4 +28,31 @@ client.ping({
 //         console.log(response);
 //     }, function (err) {
 //         throw err;
-//     });
+// //     });
+// activeTime varchar,
+// impressionProb decimal,
+// impressionProbInactive decimal,
+// viewProb decimal,
+// likeProb decimal,
+// replyProb decimal,
+// ret
+
+// const app = Consumer.create({
+//  queueUrl: 'https://sqs.us-east-1.amazonaws.com/575799175191/tweeter',
+//  messageAttributeNames: ['tweetId','type'],
+//  batchSize: 10,
+//  handleMessage: (message, done) => {
+//    // do some work with `message`
+//    console.log('message', message);
+//    console.log('message attribute', message.MessageAttributes.type.StringValue);
+//    if (message.MessageAttributes.type.StringValue === ('like' || 'view' || 'impression' )) {
+//       db.updateTweet(message.MessageAttributes.type.StringValue);
+//    }
+//      done();
+//  }
+// });
+
+// app.on('error', (err) => {
+//  console.log(err.message);
+// });
+//app.start();
