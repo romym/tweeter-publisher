@@ -4,22 +4,24 @@ var fs = require('fs');
 var csv = require('fast-csv');
 var db = require('../database/database.js');
 var elasticsearch = require('elasticsearch');
-var client = new elasticsearch.Client({
-  host: 'localhost:9200',
-  httpAuth: 'elastic:changeme',
-  log: 'trace'
-});
+var uuidv4 = require('uuid/v4'); // inserting a tweet string id to identify the string in sqs
 
-client.ping({
-    // ping usually has a 3000ms timeout 
-    requestTimeout: 1000
-  }, function (error) {
-    if (error) {
-      console.trace('elasticsearch cluster is down!');
-    } else {
-      console.log('All is well');
-    }
-  });
+// var client = new elasticsearch.Client({
+//   host: 'localhost:9200',
+//   httpAuth: 'elastic:changeme',
+//   log: 'trace'
+// });
+
+// client.ping({
+//     // ping usually has a 3000ms timeout 
+//     requestTimeout: 1000
+//   }, function (error) {
+//     if (error) {
+//       console.trace('elasticsearch cluster is down!');
+//     } else {
+//       console.log('All is well');
+//     }
+//   });
 
 // create half a million user names 
 var userGeneration = function() {
@@ -90,7 +92,7 @@ var userGeneration = function() {
 
 // create 10 million tweets 
 var messageGenerationPublisher = function(){
-    var tweets = [['id', 'user_id', 'message', 'date', 'views', 'likes', 'replies', 'retweets', 'impressions', 'type']];
+    var tweets = [['id', 'tweet_uid', 'user_id', 'message', 'date', 'views', 'likes', 'replies', 'retweets', 'impressions', 'type']];
     var tempMessages = {};
     var messages =[];
     var opening = ['just', '', '', '', '', 'ask me how i', 'completely', 'nearly', 'productively', 'efficiently', 'last night i', 'the president', 'that wizard', 'a ninja', 'a seedy old man', 'look', 'what is going on', 'let us', 'lady gaga', 'rihana', 'spence', 'SNL', 'night', 'seriously', 'i mean it','doing nothing'];
@@ -109,7 +111,7 @@ var messageGenerationPublisher = function(){
     var randomDate = function(start, end) {
         return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
     }
-    var message, count, user_id, date, type;
+    var message, count, user_id, date, type, tweet_uid;
     var uniqueMsg = {};
     count = 1;
     var countTweets;
@@ -119,6 +121,7 @@ var messageGenerationPublisher = function(){
             //uniqueMsg[message] = message;
             date = randomDate(new Date(2017, 08, 1), new Date());
             user_id = Math.floor(Math.random() * 500000);
+            tweet_uid = uuidv4();
             type = 'regular';
             // for csv: tweets.push([count, user_id, message, date, 0, 0, 0, 0, 0, type ])
             //db.insertTweet(user_id, message, date, 0, 0, 0, 0, 0, type);
@@ -163,8 +166,8 @@ var messageGenerationPublisher = function(){
 //messageGenerationPublisher();
 
 // create 10 million tweets 
-var messagePublisherKibana =  function(count){
-    var tweets = [['id', 'user_id', 'message', 'date', 'views', 'likes', 'replies', 'retweets', 'impressions', 'type']];
+var messagePublisherKibana =  function(){
+    var tweets = [['id', 'tweet_uid', 'user_id', 'message', 'date', 'views', 'likes', 'replies', 'retweets', 'impressions', 'type']];
     var tempMessages = {};
     var messages =[];
     var opening = ['just', '', '', '', '', 'ask me how i', 'completely', 'nearly', 'productively', 'efficiently', 'last night i', 'the president', 'that wizard', 'a ninja', 'a seedy old man', 'look', 'what is going on', 'let us', 'lady gaga', 'rihana', 'spence', 'SNL', 'night', 'seriously', 'i mean it','doing nothing'];
@@ -183,7 +186,7 @@ var messagePublisherKibana =  function(count){
     var randomDate = function(start, end) {
         return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
     }
-    var message, count, user_id, date, type;
+    var message, count, user_id, date, type, tweet_uid;
     var uniqueMsg = {};
     var countTweets;
     var counter = 1;
@@ -192,26 +195,28 @@ var messagePublisherKibana =  function(count){
         //if(!uniqueMsg[message]) {
             //uniqueMsg[message] = message;
             date = randomDate(new Date(2017, 08, 1), new Date());
+            tweet_uid = uuidv4();
+            console.log(tweet_uid);
             user_id = Math.floor(Math.random() * 500000);
             type = 'regular';
             // for csv: tweets.push([count, user_id, message, date, 0, 0, 0, 0, 0, type ])
-            //db.insertTweet(user_id, message, date, 0, 0, 0, 0, 0, type);
-            var objIndex = {
-                index:  { _index: 'indexmessage', _type: 'mytype', _id: count }        
-            };
-            var objMessage = {
-                user_id: user_id,
-                message: message,
-                date: date,
-                views: 0,
-                likes: 0,
-                replies: 0,
-                retweets: 0,
-                impressions: 0,
-                type: 'regular'
-            };
-            messages.push(objIndex);
-            messages.push(objMessage);
+            db.insertTweet(tweet_uid, user_id, message, date, 0, 0, 0, 0, 0, type);
+            // var objIndex = {
+            //     index:  { _index: 'indexmessage', _type: 'mytype', _id: count }        
+            // };
+            // var objMessage = {
+            //     user_id: user_id,
+            //     message: message,
+            //     date: date,
+            //     views: 0,
+            //     likes: 0,
+            //     replies: 0,
+            //     retweets: 0,
+            //     impressions: 0,
+            //     type: 'regular'
+            // };
+            // messages.push(objIndex);
+            // messages.push(objMessage);
             // if (count%100 === 0) {
             //     console.log('100 added');
             // }
@@ -221,9 +226,9 @@ var messagePublisherKibana =  function(count){
         
     }
     //writing into elastic search
-    return client.bulk({
-        body: messages
-    });
+    // return client.bulk({
+    //     body: messages
+    // });
     
 }
 
@@ -235,7 +240,7 @@ var batch = async function() {
 
 //batch();
 
-//messagePublisherKibana();
+messagePublisherKibana();
 //setTimeout(messagePublisherKibana, 120000);
 
 // for (var i = 1400000; i < 25; i = i + 200000) {

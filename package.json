@@ -10,17 +10,25 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "appmetrics": "^3.1.1",
+    "appmetrics-statsd": "^2.0.0",
     "aws-sdk": "^2.141.0",
+    "axios": "^0.17.0",
     "body-parser": "^1.18.2",
+    "dogstatsd-node": "0.0.1",
     "elasticsearch": "^13.3.1",
     "elasticsearch-csv": "0.0.3",
     "express": "^4.16.2",
     "faker": "^4.1.0",
     "fast-csv": "^2.4.1",
+    "jQuery": "^1.7.4",
+    "node-statsd": "^0.1.1",
     "pg": "^7.3.0",
+    "redis": "^2.8.0",
     "request": "^2.83.0",
     "sentencer": "^0.1.5",
-    "sqs-consumer": "^3.7.0"
+    "sqs-consumer": "^3.7.0",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "nodemon": "^1.12.1"
