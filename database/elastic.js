@@ -56,3 +56,38 @@ client.ping({
 //  console.log(err.message);
 // });
 //app.start();
+//monitoring.on('cpu', function (cpu) {
+  //     console.log('[' + new Date(cpu.time) + '] CPU: ' + cpu.process);
+  // });
+  
+  // monitoring.on('http', function (http) {
+  //     console.log('HERERE!!!!!')
+  //     console.log('http logs', http.time + " " + http.duration);
+  //     var obj = {
+  //         time: http.time,
+  //         duration: http.duration
+  //     }
+  //     axios.post('http://127.0.0.1:31311', obj)
+  //     .then(function (response) {
+  //       console.log(response);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+    
+  
+  // });
+  
+  // monitoring.on('postgres', function (postgres) {
+  //     console.log('postgres logs', postgres.time + " " + postgres.duration);
+  // });
+  
+//   monitoring.on('initialized', function (env) {
+//     env = monitoring.getEnvironment();
+//     for (var entry in env) {
+//         console.log(entry + ':' + env[entry]);
+//     };
+// // });
+
+// var appmetrics = require('appmetrics');
+// var monitoring = appmetrics.monitor();
