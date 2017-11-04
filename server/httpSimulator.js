@@ -1,4 +1,6 @@
 var request = require('request');
+var faker = require('faker');
+
 
 var getTweet = function() {
 request.get('http://localhost:3000/tweets/1/', function (error, response, body) {
@@ -11,22 +13,29 @@ request.get('http://localhost:3000/tweets/1/', function (error, response, body) 
 
 var postTweet = function(message, id) {
     var options = {  
-        url: 'http://localhost:3000/tweet/' + id,
+        url: 'http://localhost:8888/tweet/' + id,
         headers: {'content-type': 'application/json'},
         body: JSON.stringify({message: message})
     };
-    
+    console.log(options);
     request.post(options, function(error, response, body){
-        console.log('error:', error);
-        console.log('body', body);
+        console.log("REACHED>>>>>>>>>>>>>>", response);
+        if(error){
+            console.log('error:', error);
+        } 
+        //console.log('body', body);
+        //request.end();
     });
-  
 }
 
 var generateTweets = function() {
     for (var i = 0; i < 10; i++) {
-        //add code to call post tweet - we are going to simulate request 10 per second
+        postTweet('hey', 1);
     }
 }
 
-//postTweet('hey', 1);
+generateTweets();
+
+// setInterval(generateTweets, 100);
+// setInterval(getTweet, 100);
+

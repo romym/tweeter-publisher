@@ -3,6 +3,16 @@ AWS.config.loadFromPath('../config.json');
 const db = require('../database/database.js');
 const sqs = new AWS.SQS({apiVersion: '2012-11-05'});
 const Consumer = require('sqs-consumer');
+var StatsD = require('node-statsd'),
+client = new StatsD({
+    host: 'statsd.hostedgraphite.com',
+    port: 8125,
+    prefix: '57d0d96b-1f64-41c4-8667-1a569b9e2f59'
+});
+
+client.socket.on('error', function(error) {
+    return console.error("Error in socket: ", error);
+  });
 
 var receiveSqs = function() {
   var params = {
@@ -13,28 +23,35 @@ var receiveSqs = function() {
   QueueUrl: "https://sqs.us-east-1.amazonaws.com/575799175191/tweeter"
 };
 
-  sqs.receiveMessage(params, function(err, data) {
+  sqs.receiveMessage(params, async function(err, data) {
+    var start = new Date();
     if (err) {
       console.log("Receive Error", err);
     } else {
-     
-      // console.log('message', data.Messages[0]);
-      // console.log('attribute body', data.Messages[0].Body);
-      if (data.Messages) {
+     client.increment('.sqsMessageReceived');
+     if (data.Messages) {
         var type = data.Messages[0].MessageAttributes.type.StringValue;
         var tweetId = data.Messages[0].MessageAttributes.tweetId.StringValue;
         if (type === 'impression') {
-            db.updateTweet(type, tweetId);
+            await db.updateTweet(type, tweetId);
+            var latency = new Date() - start;
+            client.timing('.dbUpdateImpression', latency);
         } else if (type === 'view' || type === 'like') {
             var userId = data.Messages[0].MessageAttributes.userId.StringValue;
-            db.updateTweet(type, tweetId, userId);
+            await db.updateTweet(type, tweetId, userId);
+            var latency = new Date() - start;
+            client.timing('.dbUpdateView', latency);
         } else if (type === 'retweet') {
             var userId = data.Messages[0].MessageAttributes.userId.StringValue;
-            db.updateTweet(type, tweetId, userId);
+            await db.updateTweet(type, tweetId, userId);
+            var latency = new Date() - start;
+            client.timing('.dbUpdateRetweet', latency);
         } else if (type === 'reply') {
             var userId = data.Messages[0].MessageAttributes.userId.StringValue;
             var msg = data.Messages[0].Body;
-            db.updateTweet(type, tweetId, userId, msg);
+            await db.updateTweet(type, tweetId, userId, msg);
+            var latency = new Date() - start;
+            client.timing('.dbUpdateReply', latency);
         } 
         console.log("Message Deleted", data.Messages[0].MessageAttributes);
         var deleteParams = {
